@@ -1,0 +1,52 @@
+name: Norish Packages
+generated: '2026-08-27'
+method: searched
+source: >-
+  Docker Hub registry API (hub.docker.com/v2/repositories/norishapp/*), the norish-recipes/norish
+  GitHub repository (README + docker-compose quick start), and npm registry probes, 2026-08-27.
+note: >-
+  Norish ships NO first-party client SDK. It distributes the application itself as container images
+  under the Docker Hub org `norishapp`, and its source as a pnpm monorepo whose internal workspace
+  packages (@norish/api, @norish/trpc, @norish/auth, @norish/db, …) are NOT published to npm —
+  registry.npmjs.org returns 404 for `norish`, `@norish/api` and `create-norish`. No `SDKs` pointer
+  is emitted in apis.yml, because a consumer of the /api/v1 HTTP API has no vendor-published client
+  library in any language registry.
+packages:
+- name: norishapp/norish
+  official: true
+  registry: docker
+  url: https://hub.docker.com/r/norishapp/norish
+  language: multi
+  kind: application-image
+  version: v0.21.0-beta
+  published: '2026-08-22'
+  note: >-
+    The Norish application server image referenced by the published docker-compose quick start
+    (image: norishapp/norish:latest). Docker Hub reports 386,344 pulls. A release-candidate tag
+    rc-v0.21.0-beta was pushed 2026-08-23; the newest stable-tagged release is v0.21.0-beta, which
+    matches the GitHub release of the same day. This is the deployable product, not a client SDK.
+- name: norishapp/obscura
+  official: true
+  registry: docker
+  url: https://hub.docker.com/r/norishapp/obscura
+  language: multi
+  kind: supporting-service-image
+  version: 0.2.0-norish.1
+  published: null
+  note: >-
+    Stealth headless-browser renderer used by Norish to render recipe pages before the Python parser
+    reads them; pinned to 0.2.0-norish.1 in the published quick-start compose file. `published` is
+    null because the tag date was not read from the registry in this pass.
+- name: '@norish/* workspace packages'
+  official: true
+  registry: none
+  url: https://github.com/norish-recipes/norish
+  language: typescript
+  kind: internal-monorepo-package
+  version: null
+  published: null
+  note: >-
+    packages/api, packages/trpc, packages/db, packages/db-schema, packages/auth and siblings are
+    internal pnpm workspace packages consumed only inside the monorepo. Checked, nothing to record:
+    registry.npmjs.org returns 404 for the npm names probed, so there is no published version or
+    release date for a consumer to read.

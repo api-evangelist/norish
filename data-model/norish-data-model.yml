@@ -1,0 +1,193 @@
+name: Norish Data Model
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from the published API reference (https://docs.norish.dev/reference/api) and the Drizzle
+  schema files in the public source tree
+  (https://github.com/norish-recipes/norish/tree/main/packages/db-schema/src/schema), 2026-08-27.
+note: >-
+  The OpenAPI document is session-gated, so this graph is not derived from $ref links in a retrieved
+  spec. Entities and relationships are read from the names and grouping of the published Drizzle
+  schema modules plus the resources the /api/v1 surface exposes. Cardinalities marked `inferred` are
+  read from a join-table name rather than from a stated contract, and should be treated as
+  discovery-grade rather than authoritative.
+api_resources:
+- recipes
+- groceries
+- stores
+- planned-recipes
+- health
+entities:
+- name: household
+  schema_file: households.ts
+  api_exposed: false
+  note: The sharing boundary — recipes, groceries and the calendar are shared within a household.
+- name: user
+  schema_file: auth.ts
+  api_exposed: false
+- name: household_user
+  schema_file: household-users.ts
+  kind: join
+  api_exposed: false
+- name: recipe
+  schema_file: recipes.ts
+  api_exposed: true
+  operations:
+  - GET /api/v1/recipes/{id}
+  - POST /api/v1/recipes/search
+  - POST /api/v1/recipes/import/url
+  - POST /api/v1/recipes/import/paste
+- name: step
+  schema_file: steps.ts
+  api_exposed: false
+- name: ingredient
+  schema_file: ingredients.ts
+  api_exposed: false
+- name: recipe_ingredient
+  schema_file: recipe-ingredients.ts
+  kind: join
+- name: step_ingredient
+  schema_file: step-ingredients.ts
+  kind: join
+- name: recipe_image
+  schema_file: recipe-images.ts
+- name: step_image
+  schema_file: step-images.ts
+- name: recipe_video
+  schema_file: recipe-videos.ts
+- name: tag
+  schema_file: tags.ts
+- name: recipe_tag
+  schema_file: recipe-tags.ts
+  kind: join
+- name: recipe_category
+  schema_file: recipe-categories.ts
+- name: cuisine
+  schema_file: cuisines.ts
+  note: Administrator-curated list; see https://docs.norish.dev/recipes/provenance
+- name: recipe_cuisine
+  schema_file: recipe-cuisines.ts
+  kind: join
+- name: recipe_rating
+  schema_file: recipe-ratings.ts
+- name: recipe_favorite
+  schema_file: recipe-favorites.ts
+- name: recipe_share
+  schema_file: recipe-shares.ts
+- name: recipe_share_link
+  schema_file: recipe-share-links.ts
+- name: grocery
+  schema_file: groceries.ts
+  api_exposed: true
+  operations:
+  - GET /api/v1/groceries
+  - POST /api/v1/groceries
+  - PATCH /api/v1/groceries/{id}/done
+  - PATCH /api/v1/groceries/{id}/undone
+  - PATCH /api/v1/groceries/{id}/store
+  - DELETE /api/v1/groceries/{id}
+  concurrency: carries a `version` field for optimistic concurrency on single-grocery mutations
+- name: recurring_grocery
+  schema_file: recurring-groceries.ts
+- name: store
+  schema_file: stores.ts
+  api_exposed: true
+  operations:
+  - GET /api/v1/stores
+  - POST /api/v1/stores
+- name: planned_item
+  schema_file: planned-items.ts
+  api_exposed: true
+  operations:
+  - GET /api/v1/planned-recipes/today
+  - GET /api/v1/planned-recipes/week
+  - GET /api/v1/planned-recipes/month
+  - POST /api/v1/planned-recipes
+  - DELETE /api/v1/planned-recipes/{itemId}
+- name: caldav_config
+  schema_file: caldav-config.ts
+- name: caldav_sync_status
+  schema_file: caldav-sync-status.ts
+- name: user_allergy
+  schema_file: user-allergies.ts
+- name: site_auth_token
+  schema_file: site-auth-tokens.ts
+  note: Per-source site authentication tokens used by the importer to reach gated recipe pages.
+- name: server_config
+  schema_file: server-config.ts
+- name: api_log
+  schema_file: api-logs.ts
+relationships:
+- from: household
+  to: user
+  type: has_many
+  via: household_users
+  confidence: inferred
+- from: recipe
+  to: household
+  type: belongs_to
+  confidence: inferred
+- from: recipe
+  to: step
+  type: has_many
+  confidence: inferred
+- from: recipe
+  to: ingredient
+  type: has_many
+  via: recipe_ingredients
+  confidence: inferred
+- from: step
+  to: ingredient
+  type: has_many
+  via: step_ingredients
+  confidence: high
+  note: >-
+    Step-level ingredient linking is a documented 0.20.0-beta feature
+    (https://docs.norish.dev/recipes/step-ingredients).
+- from: recipe
+  to: recipe_image
+  type: has_many
+  confidence: inferred
+- from: recipe
+  to: recipe_video
+  type: has_many
+  confidence: inferred
+- from: recipe
+  to: tag
+  type: has_many
+  via: recipe_tags
+  confidence: inferred
+- from: recipe
+  to: cuisine
+  type: has_many
+  via: recipe_cuisines
+  confidence: high
+  note: A fusion dish can carry several cuisines (documented on the provenance page).
+- from: recipe
+  to: recipe_rating
+  type: has_many
+  confidence: inferred
+- from: planned_item
+  to: recipe
+  type: belongs_to
+  confidence: high
+  note: Planned-recipe endpoints return recipes placed on the household calendar.
+- from: grocery
+  to: store
+  type: belongs_to
+  via: storeId
+  confidence: high
+  note: PATCH /api/v1/groceries/{id}/store accepts storeId plus an optional savePreference.
+- from: grocery
+  to: household
+  type: belongs_to
+  confidence: inferred
+- from: caldav_config
+  to: household
+  type: belongs_to
+  confidence: inferred
+  note: packages/api/src/caldav/household-deduplication.ts implies a household-scoped CalDAV sync.
+identifier_conventions:
+  note: >-
+    No id-prefix scheme is documented. Path parameters are named {id} for recipes and groceries and
+    {itemId} for planned recipes; their format is not stated in the reference.

@@ -1,0 +1,162 @@
+name: Norish API Conventions
+generated: '2026-08-27'
+method: searched
+source: https://docs.norish.dev/reference/api
+docs:
+- https://docs.norish.dev/reference/api
+- https://docs.norish.dev/offline
+- https://github.com/norish-recipes/norish/blob/main/packages/trpc/src/idempotency-middleware.ts
+- https://github.com/norish-recipes/norish/blob/main/docs/adr/offline/0002-replay-idempotency-via-operation-id-middleware.md
+note: >-
+  Norish is self-hosted, so every convention below is a property of the software an operator runs,
+  not of a vendor-operated endpoint. The /api/v1 surface is generated from the application's tRPC
+  router by trpc-to-openapi, which is why REST semantics (paths, methods, the OpenAPI document at
+  /api/openapi.json) and tRPC semantics (procedures, superjson serialization, the x-operation-id
+  correlation header) are visible side by side.
+auth:
+  style: API key
+  headers:
+  - x-api-key
+  - Authorization (Bearer)
+  public_operations:
+  - GET /api/v1/health
+  see: authentication/norish-authentication.yml
+base_path:
+  prefix: /api/v1
+  openapi_document: /api/openapi.json
+  interactive_reference: /api/docs
+  gated: >-
+    Both /api/openapi.json and /api/docs require a signed-in web session; only /api/v1 accepts an
+    API key.
+idempotency:
+  supported: true
+  header: x-operation-id
+  scope: authenticated mutations only (non-mutations and mutations without the header pass through)
+  key_semantics: >-
+    The client supplies an operation id; the server atomically claims it in Redis and stores the
+    superjson-serialized response. A repeat carrying the same id returns the stored response without
+    re-executing the handler.
+  retention: 7 days (604800 seconds)
+  scoping: keys are namespaced per user (norish:idempotency:) to prevent cross-user response leakage
+  failure_behavior: >-
+    Only successful responses are cached. A handler that throws releases its claim so a later replay
+    can re-attempt — a transient failure is never memoized into a permanent one.
+  concurrency: >-
+    A duplicate arriving while the original is still in flight polls the claim (50 ms cadence, ~10 s
+    ceiling) and returns the real response rather than a spurious retryable error.
+  purpose: >-
+    Built for the mobile/web Outbox replay path — a connection lost between server commit and client
+    ack can deliver a mutation twice — so duplicate safety is mandatory rather than opt-in.
+  source: packages/trpc/src/idempotency-middleware.ts (ADR-0002)
+pagination:
+  style: cursor
+  operation: POST /api/v1/recipes/search
+  request_fields:
+  - name: cursor
+    default: 0
+  - name: limit
+    default: 50
+  filters:
+  - search
+  - searchFields
+  - tags
+  - categories
+  - filterMode
+  - sortMode
+  - minRating
+  - maxCookingTime
+  response: paginated recipe list
+  note: Only the recipe search operation documents pagination; grocery, store and planned-recipe lists do not.
+concurrency_control:
+  style: optimistic concurrency
+  field: version
+  applies_to: >-
+    Grocery mutation endpoints that target a single grocery (done, undone, store assignment, delete)
+    require a `version` field in the request body.
+  conflict_behavior: not documented in the API reference
+field_expansion:
+  supported: false
+  note: No expand/fields/sparse-fieldset parameter is documented.
+metadata:
+  supported: false
+  note: No customer-defined metadata field is documented on API resources.
+request_tracing:
+  header: x-operation-id
+  note: >-
+    Client-supplied correlation id, forwarded into the request context by the OpenAPI handler. It
+    doubles as the idempotency key; no separate request-id or trace header is documented.
+versioning:
+  api: URL path versioning — /api/v1
+  product: semantic-version-style beta tags (v0.21.0-beta), see lifecycle/norish-lifecycle.yml
+  breaking_change_policy: not published
+errors:
+  envelope: not documented
+  rfc9457: false
+  note: >-
+    The API reference publishes no error catalog and no problem+json media type. Errors surface as
+    tRPC errors mapped to HTTP status codes by trpc-to-openapi; no errors/ artifact is written here
+    because nothing authoritative was published to ground one.
+rate_limit_signaling:
+  headers: []
+  note: No rate-limit response headers are documented. See rate-limits/norish-rate-limits.yml.
+dry_run_mode:
+  supported: false
+  grade: absent
+  note: No preview/simulate/validate-only mode is documented on any write operation.
+reversibility:
+  grade: documented
+  note: >-
+    Every documented write on the /api/v1 surface except recipe creation and recipe import has an
+    explicit inverse operation, but Norish states no time window for any of them, so this grades
+    `documented` rather than `verified`. NOTE ON WINDOWS: none of the reversal windows below is
+    asserted, because the docs do not state one.
+  surfaces:
+  - write: POST /api/v1/groceries
+    operation: groceryCreate
+    reversal: DELETE /api/v1/groceries/{id}
+    reversal_operation: groceryDelete
+    window: not stated
+    docs: https://docs.norish.dev/reference/api
+  - write: PATCH /api/v1/groceries/{id}/done
+    operation: groceryMarkDone
+    reversal: PATCH /api/v1/groceries/{id}/undone
+    reversal_operation: groceryMarkUndone
+    window: not stated
+    docs: https://docs.norish.dev/reference/api
+    note: An explicit named inverse pair — the strongest reversal signal on this API.
+  - write: PATCH /api/v1/groceries/{id}/store
+    operation: groceryAssignStore
+    reversal: re-issue the same operation with a different storeId
+    window: not stated
+    docs: https://docs.norish.dev/reference/api
+    note: Idempotent-by-overwrite rather than a named undo.
+  - write: POST /api/v1/planned-recipes
+    operation: plannedRecipeCreate
+    reversal: DELETE /api/v1/planned-recipes/{itemId}
+    reversal_operation: plannedRecipeDelete
+    window: not stated
+    docs: https://docs.norish.dev/reference/api
+  - write: POST /api/v1/recipes, POST /api/v1/recipes/import/url, POST /api/v1/recipes/import/paste
+    reversal: none on the /api/v1 surface
+    window: not stated
+    docs: https://docs.norish.dev/reference/api
+    note: >-
+      Recipes created or imported through the API cannot be deleted or archived through it — no
+      DELETE /api/v1/recipes/{id} is documented. Recipe removal is a web-app action only.
+  - write: recipe archive import (web app, not /api/v1)
+    reversal: none
+    window: not stated
+    docs: https://docs.norish.dev/recipes/recipe-archive
+    note: >-
+      The docs explicitly warn this is irreversible in effect — an imported archive OVERWRITES a
+      matching recipe (matched by URL or name within the household) rather than duplicating it, and
+      the docs flag that an untrusted archive can overwrite a recipe by carrying the same name.
+      Recorded here because it is the one destructive path Norish documents.
+offline_write_semantics:
+  outbox: >-
+    Web-app writes made offline are durably queued in an Outbox and replayed in order when the
+    server is reachable; states are Syncing, Needs attention (Parked after retries exhausted) and
+    Conflict (server state changed first).
+  docs: https://docs.norish.dev/offline
+  relation_to_idempotency: >-
+    Outbox replay is precisely why x-operation-id idempotency exists — see the idempotency block.

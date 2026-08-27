@@ -1,0 +1,88 @@
+# Norish
+
+> Norish is an open-source, self-hosted recipe and meal-planning app for households. Import a recipe
+> from a URL, video or photo; plan the week on a shared calendar; keep a grocery list every member of
+> the household sees update in real time. Distributed as a Docker image under AGPL-3.0 and run on the
+> operator's own hardware — there is no hosted Norish service.
+
+Generated: 2026-08-27
+Method: generated (Norish publishes no llms.txt — https://norish.dev/llms.txt and
+https://docs.norish.dev/llms.txt both returned 404 on 2026-08-27)
+Source: https://docs.norish.dev/ and https://github.com/norish-recipes/norish
+Maintained by: API Evangelist (third-party profile, not by Norish)
+
+## Read this first
+
+Norish is self-hosted software, not a SaaS API. Every instance is operated by its user, so:
+
+- There is NO vendor base URL. The API base is `https://<the-household's-own-host>/api/v1`.
+- Credentials are issued by that instance. API Evangelist has none and can obtain none.
+- The OpenAPI document (`/api/openapi.json`) and the interactive reference (`/api/docs`) are served
+  only to a signed-in web session, so neither is publicly retrievable and no OpenAPI file is
+  captured in this profile.
+- There is no status page, no SLA and no pricing, because there is no service to have them.
+
+## The API
+
+- API reference: https://docs.norish.dev/reference/api
+- Base path: `/api/v1`
+- Auth: instance-issued API key, sent as `x-api-key` or `Authorization: Bearer <key>`
+- Public operation: `GET /api/v1/health` (200 only when the API and the parser service are healthy)
+
+Operations Norish documents:
+
+- Recipes: `GET /api/v1/recipes/{id}`, `POST /api/v1/recipes/search`,
+  `POST /api/v1/recipes/import/url`, `POST /api/v1/recipes/import/paste`
+- Groceries: `GET /api/v1/groceries`, `POST /api/v1/groceries`,
+  `PATCH /api/v1/groceries/{id}/done`, `PATCH /api/v1/groceries/{id}/undone`,
+  `PATCH /api/v1/groceries/{id}/store`, `DELETE /api/v1/groceries/{id}`
+- Stores: `GET /api/v1/stores`, `POST /api/v1/stores`
+- Planned recipes: `GET /api/v1/planned-recipes/today|week|month`, `POST /api/v1/planned-recipes`,
+  `DELETE /api/v1/planned-recipes/{itemId}`
+
+## Runtime rules an agent must follow
+
+- Idempotency: send `x-operation-id` on every mutation. The server claims the id in Redis for 7 days
+  and returns the stored response on a replay instead of re-running the handler.
+- Optimistic concurrency: single-grocery mutations require the item's current `version`.
+- Pagination: only `POST /api/v1/recipes/search` pages — `cursor` (default 0), `limit` (default 50).
+- Timezones: today/week/month planned-recipe ranges use the SERVER timezone; the week is Monday
+  through Sunday. Do not compute the boundary client-side.
+- Rate limits: none published for `/api/v1`, and no rate-limit response headers are documented. The
+  only published limit is operator-configurable brute-force protection on sign-in (default 20
+  requests per 60 seconds).
+- Errors: no error catalog and no RFC 9457 problem+json.
+- Reversibility: grocery done has a named inverse (`/undone`); groceries and planned recipes can be
+  deleted. Recipes CANNOT be deleted through the API. No reversal window is published for anything —
+  do not assert one.
+
+## Documentation
+
+- Website: https://norish.dev
+- Docs home: https://docs.norish.dev/
+- Quick start (Docker Compose): https://docs.norish.dev/quick-start
+- Authentication (password, OIDC, GitHub, Google): https://docs.norish.dev/configuration/authentication
+- Server and runtime settings: https://docs.norish.dev/configuration/server-runtime
+- Recipe parser and Obscura renderer: https://docs.norish.dev/configuration/parser
+- AI provider configuration: https://docs.norish.dev/configuration/ai-provider
+- Offline use, Outbox and conflict states: https://docs.norish.dev/offline
+- Recipe archive (.norishrecipes export/import): https://docs.norish.dev/recipes/recipe-archive
+- Recipe provenance: https://docs.norish.dev/recipes/provenance
+- Tech stack: https://docs.norish.dev/reference/tech-stack
+- Release notes: https://docs.norish.dev/category/release-notes
+
+## Source and distribution
+
+- Source: https://github.com/norish-recipes/norish (AGPL-3.0)
+- Releases: https://github.com/norish-recipes/norish/releases — current v0.21.0-beta (2026-08-22)
+- Application image: https://hub.docker.com/r/norishapp/norish
+- Renderer image: https://hub.docker.com/r/norishapp/obscura
+- Issues and support: https://github.com/norish-recipes/norish/issues
+- No client SDK is published in any language registry.
+
+## What Norish does not publish
+
+- No MCP server, no A2A agent card, no `/.well-known/*` document of any kind (all probed 404 on
+  norish.dev and docs.norish.dev, 2026-08-27).
+- No AsyncAPI, no webhooks, no gRPC/protobuf, no WSDL, no GraphQL.
+- No pricing, no plans, no status page, no security.txt, no bug bounty, no trust center.

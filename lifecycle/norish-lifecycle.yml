@@ -1,0 +1,58 @@
+name: Norish Lifecycle
+generated: '2026-08-27'
+method: searched
+source: https://github.com/norish-recipes/norish/releases
+docs:
+- https://docs.norish.dev/category/release-notes
+- https://github.com/norish-recipes/norish/releases
+- https://docs.norish.dev/reference/api
+versioning:
+  api: URL path versioning — /api/v1. The generated OpenAPI document declares info.version 1.0.0.
+  product: >-
+    Semantic-version-style tags with a -beta suffix, currently v0.21.0-beta. Docs are versioned
+    alongside the product (docs.norish.dev carries 0.19.0-beta, 0.19.1-beta, 0.20.0-beta and the
+    current release side by side).
+  stability: >-
+    The product self-describes as beta at every release; the API surface itself is not separately
+    labelled stable or beta.
+release_cadence:
+  observed: roughly monthly minor releases through 2026, with patch releases in between
+  latest_release: v0.21.0-beta
+  latest_release_date: '2026-08-22'
+  source: https://github.com/norish-recipes/norish/releases
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    No deprecation policy, no Sunset or Deprecation response headers, and no documented removal
+    schedule. No `Deprecation` pointer is emitted in apis.yml.
+  deprecated_operations: []
+sla:
+  published: false
+  note: >-
+    Not applicable in the usual sense — Norish is self-hosted software under AGPL-3.0 with no vendor
+    availability commitment. Availability is the operator's own.
+status_page:
+  published: false
+  url: null
+  note: >-
+    There is no vendor status page and there cannot be one: every instance is operated by its own
+    user. The nearest equivalent is the public GET /api/v1/health endpoint each instance serves,
+    which returns 200 only when the API and the parser service are both healthy. No `StatusPage`
+    pointer is emitted in apis.yml.
+support:
+  channel: GitHub issues
+  url: https://github.com/norish-recipes/norish/issues
+end_of_life:
+  policy_published: false
+  data_portability: >-
+    A Recipe Archive export (.norishrecipes) is documented as the wind-down path — a server admin can
+    export every recipe on the instance before shutting it down. The docs are explicit that it is an
+    exchange of recipe content and NOT a backup: no accounts, households, planned meals, groceries,
+    stores or settings are in the file.
+  docs: https://docs.norish.dev/recipes/recipe-archive
+license:
+  spdx: AGPL-3.0
+  url: https://github.com/norish-recipes/norish/blob/main/LICENSE

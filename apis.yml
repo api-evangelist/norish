@@ -1,23 +1,116 @@
 aid: norish
 name: Norish
-description: 'Norish is a company surfaced via the API Evangelist harvest backlog (source: health-device-stack)
-  and added to the network as a stub for full-pipeline profiling.'
+description: Norish is an open-source, self-hosted recipe and meal-planning application built for
+  households — import a recipe from a URL, video or photo, plan the week on a shared calendar, and
+  keep a grocery list that every member of the household sees update in real time. It is distributed
+  as a Docker image (norishapp/norish) under AGPL-3.0 and runs entirely on the operator's own
+  hardware, with PostgreSQL, Redis and a Python parser service behind it. Each instance exposes an
+  HTTP API under /api/v1 — recipes, recipe imports, groceries, stores and planned recipes — secured
+  with an instance-issued API key, plus a generated OpenAPI document and a Scalar API reference that
+  are served from the running instance to signed-in users.
+image: https://raw.githubusercontent.com/norish-recipes/norish/main/.github/assets/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/norish/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:health-device-stack
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-27'
 modified: '2026-08-27'
 tags:
 - Company
-apis: []
+- Recipes
+- Meal Planning
+- Groceries
+- Food
+- Self-Hosted
+- Open Source
+- Household
+- Calendar
+- CalDAV
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: norish-recipe-api
+  name: Norish Recipe API
+  description: The HTTP API each Norish instance serves under /api/v1, covering a public health
+    check plus authenticated recipe read/search/create/import, grocery list management, stores, and
+    planned recipes for today/week/month. Authenticated with an instance-issued API key passed as
+    x-api-key or as an Authorization Bearer token. Because Norish is self-hosted there is no vendor
+    base URL — the host is the operator's own instance, so the base is templated.
+  humanURL: https://docs.norish.dev/reference/api
+  baseURL: https://{norish-instance-host}/api/v1
+  tags:
+  - Recipes
+  - Groceries
+  - Meal Planning
+  - Stores
+  - Calendar
+  properties:
+  - type: APIReference
+    url: https://docs.norish.dev/reference/api
+  - type: Documentation
+    url: https://docs.norish.dev/
+  - type: Authentication
+    url: authentication/norish-authentication.yml
+  - type: Conventions
+    url: conventions/norish-conventions.yml
+  - type: Idempotency
+    url: conventions/norish-conventions.yml
+  - type: RateLimits
+    url: rate-limits/norish-rate-limits.yml
+  - type: DataModel
+    url: data-model/norish-data-model.yml
 common:
+- type: DomainSecurity
+  url: security/norish-domain-security.yml
 - type: Website
-  url: https://norish.app
+  url: https://norish.dev
+- type: Documentation
+  url: https://docs.norish.dev/
+- type: GettingStarted
+  url: https://docs.norish.dev/quick-start
+- type: GitHubOrganization
+  url: https://github.com/norish-recipes
+- type: SourceCode
+  url: https://github.com/norish-recipes/norish
+- type: Support
+  url: https://github.com/norish-recipes/norish/issues
+- type: License
+  url: https://github.com/norish-recipes/norish/blob/main/LICENSE
+- type: Packages
+  url: packages/norish-packages.yml
+- type: Lifecycle
+  url: lifecycle/norish-lifecycle.yml
+- type: ChangeLog
+  url: changelog/norish-changelog.yml
+- type: Conformance
+  url: conformance/norish-conformance.yml
+- type: Plans
+  url: plans/norish-plans-pricing.yml
+- type: LLMsTxt
+  url: llms/norish-llms.txt
+- type: MCPServer
+  url: mcp/norish-mcp.yml
+- type: DeveloperPortal
+  url: https://docs.norish.dev/
+- type: APIReference
+  url: https://docs.norish.dev/reference/api
+- type: Authentication
+  url: authentication/norish-authentication.yml
+- type: Conventions
+  url: conventions/norish-conventions.yml
+- type: Idempotency
+  url: conventions/norish-conventions.yml
+- type: RateLimits
+  url: rate-limits/norish-rate-limits.yml
+- type: DataModel
+  url: data-model/norish-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-27'
+  status: enriched
+  artifacts_added: 18
+  pass: local-v1

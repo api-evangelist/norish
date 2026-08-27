@@ -1,0 +1,111 @@
+name: Norish Conformance
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from the published Norish API reference (docs.norish.dev/reference/api), the configuration
+  docs, and the public norish-recipes/norish source tree, 2026-08-27. Nothing here is asserted from a
+  marketing claim.
+note: >-
+  Norish makes no formal conformance claims anywhere in its documentation. Every entry below is
+  read from what the contract and the source actually declare, and each carries the exact location.
+  The OpenAPI document itself could not be fetched — /api/openapi.json is session-gated on every
+  instance — so OpenAPI-level entries are evidenced from the generator configuration in source
+  rather than from a retrieved spec.
+standards:
+- id: openapi
+  name: OpenAPI 3.x
+  conforms: true
+  evidence: >-
+    packages/trpc/src/openapi.ts calls generateOpenApiDocument() from trpc-to-openapi with title
+    "Norish Recipe API", version 1.0.0, a baseUrl of {instance}/api/v1, six tags and two security
+    schemes; apps/web/app/api/openapi.json/route.ts serves the result. Documented at
+    https://docs.norish.dev/reference/api as "OpenAPI spec (JSON): /api/openapi.json".
+  caveat: The document is served only to a signed-in session, so it is not publicly retrievable.
+- id: oauth2
+  name: OAuth 2.0
+  conforms: true
+  role: relying party
+  evidence: >-
+    https://docs.norish.dev/configuration/authentication documents GitHub and Google OAuth providers
+    with fixed callback URLs (/api/auth/callback/github, /api/auth/callback/google) via Better Auth.
+    Norish consumes OAuth; it is not an authorization server.
+- id: oidc
+  name: OpenID Connect
+  conforms: true
+  role: relying party
+  evidence: >-
+    OIDC_ISSUER / OIDC_CLIENT_ID / OIDC_CLIENT_SECRET / OIDC_WELLKNOWN configuration with a
+    /api/auth/oauth2/callback/oidc callback, plus optional group-claim mapping (OIDC_GROUPS_CLAIM,
+    OIDC_ADMIN_GROUP, OIDC_HOUSEHOLD_GROUP_PREFIX). Source:
+    https://docs.norish.dev/configuration/authentication
+- id: rfc9457
+  name: Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    No application/problem+json media type and no error catalog appear in the API reference; errors
+    are tRPC errors mapped to status codes by trpc-to-openapi.
+- id: pagination
+  name: Cursor pagination
+  conforms: true
+  evidence: >-
+    POST /api/v1/recipes/search accepts cursor (default 0) and limit (default 50) and returns a
+    paginated recipe list. https://docs.norish.dev/reference/api
+  caveat: Only the recipe search operation is paginated; other list endpoints are not.
+- id: idempotency
+  name: Idempotent mutations
+  conforms: true
+  evidence: >-
+    packages/trpc/src/idempotency-middleware.ts makes every authenticated mutation carrying the
+    x-operation-id header idempotent via a Redis claim with a 7-day TTL, per ADR-0002
+    (docs/adr/offline/0002-replay-idempotency-via-operation-id-middleware.md).
+- id: rfc9116
+  name: security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on norish.dev and docs.norish.dev (probed 2026-08-27).
+- id: rfc8594
+  name: Sunset header / deprecation signalling
+  conforms: false
+  evidence: No deprecation policy or Sunset/Deprecation header is documented.
+domain_standards:
+- id: caldav
+  name: CalDAV (RFC 4791)
+  conforms: true
+  role: client
+  evidence: >-
+    Norish ships a first-party CalDAV integration: packages/api/src/caldav/{sync-manager,
+    event-listener, household-deduplication}.ts, db schema tables caldav-config and
+    caldav-sync-status, tRPC router packages/trpc/src/routers/caldav, and a user-facing
+    Settings → CalDAV configuration screen (apps/web/app/(app)/settings/caldav/). This is the
+    domain-standard signature for the meal-planning market: a household's planned meals sync to any
+    CalDAV calendar rather than needing a bespoke connector per calendar vendor.
+  caveat: >-
+    Norish acts as a CalDAV client synchronising out to an external calendar server; it does not
+    itself serve a CalDAV collection, and the CalDAV surface is not exposed on /api/v1.
+  source: https://github.com/norish-recipes/norish/tree/main/packages/api/src/caldav
+- id: schema-org-recipe
+  name: schema.org/Recipe (JSON-LD)
+  conforms: true
+  role: consumer
+  evidence: >-
+    The URL import path renders a page in the Obscura browser and hands the HTML to the Python
+    parser service, which uses the recipe-scrapers library; the TypeScript parser
+    (packages/api/src/parser/parsers/*) reads application/ld+json schema.org Recipe markup, with an
+    AI fallback behind it. Documented at https://docs.norish.dev/configuration/parser.
+  caveat: >-
+    Norish consumes schema.org Recipe markup on import. It does not publish schema.org Recipe
+    JSON-LD on its own /api/v1 responses, so an agent reading the API gets Norish's own recipe shape,
+    not the standard vocabulary.
+- id: norishrecipes-archive
+  name: .norishrecipes Recipe Archive (vendor format)
+  conforms: false
+  standard: false
+  evidence: >-
+    https://docs.norish.dev/recipes/recipe-archive documents a single-file portable archive
+    (norish-recipes-YYYY-MM-DD.norishrecipes) carrying every recipe with photos and videos, and the
+    importer also accepts Mela and Mealie exports. Recorded for completeness: this is a vendor
+    interchange format, NOT an industry standard, and it is explicitly not a backup.
+compliance:
+  certifications_published: false
+  note: >-
+    No SOC 2, ISO 27001, PCI, HIPAA or FedRAMP claim exists, and none would apply — Norish operates
+    no service. No `Compliance` pointer is emitted in apis.yml.

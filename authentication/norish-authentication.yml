@@ -1,0 +1,84 @@
+name: Norish Authentication
+generated: '2026-08-27'
+method: searched
+source: https://docs.norish.dev/reference/api
+docs:
+- https://docs.norish.dev/reference/api
+- https://docs.norish.dev/configuration/authentication
+note: >-
+  Two distinct authentication surfaces exist and should not be confused. (1) The /api/v1 machine API
+  authenticates with an instance-issued API key. (2) Human sign-in to the web app — and therefore to
+  the /api/docs reference and the /api/openapi.json document, which are session-gated — uses Better
+  Auth with email/password, OIDC, GitHub or Google, configured by the instance operator. Norish is
+  self-hosted, so the OIDC/OAuth provider is the operator's own, not a Norish-run identity service.
+api_security_schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  description: Instance-issued API key sent in the x-api-key request header.
+  source: https://docs.norish.dev/reference/api
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  parameter: Authorization
+  description: "The same instance-issued API key sent as an Authorization header with the Bearer scheme."
+  source: https://docs.norish.dev/reference/api
+unauthenticated_operations:
+- method: GET
+  path: /api/v1/health
+  note: >-
+    Public health check. Returns 200 only when both the API and the internal parser service are
+    healthy; it is the endpoint the published docker-compose healthcheck calls.
+gated_surfaces:
+- path: /api/openapi.json
+  gate: signed-in web session
+  note: The generated OpenAPI document is served only to a signed-in user, so it is not publicly fetchable.
+- path: /api/docs
+  gate: signed-in web session
+  note: Scalar API reference; redirects to /login with a callbackUrl when there is no session.
+user_authentication:
+  framework: Better Auth
+  providers:
+  - id: password
+    name: Email and password
+    default: true
+    note: Enabled automatically when no other provider is configured; PASSWORD_AUTH_ENABLED forces it on or off.
+  - id: oidc
+    name: OpenID Connect
+    callback: https://{auth-url-host}/api/auth/oauth2/callback/oidc
+    config:
+    - OIDC_NAME
+    - OIDC_ISSUER
+    - OIDC_CLIENT_ID
+    - OIDC_CLIENT_SECRET
+    - OIDC_WELLKNOWN
+    claim_mapping:
+      enabled_by: OIDC_CLAIM_MAPPING_ENABLED
+      groups_claim_default: groups
+      admin_group_default: norish_admin
+      household_group_prefix_default: norish_household_
+  - id: github
+    name: GitHub OAuth
+    callback: https://{auth-url-host}/api/auth/callback/github
+    config:
+    - GITHUB_CLIENT_ID
+    - GITHUB_CLIENT_SECRET
+  - id: google
+    name: Google OAuth
+    callback: https://{auth-url-host}/api/auth/callback/google
+    config:
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_SECRET
+  bootstrap:
+    first_user_becomes: server owner and server admin
+    registration_after_first_signin: disabled automatically (ENABLE_REGISTRATION default false)
+  brute_force_protection:
+    enabled_by: AUTH_RATE_LIMIT_ENABLED
+    default: true
+    window_seconds: 60
+    max_requests: 20
+secrets_handling:
+  master_key: >-
+    MASTER_KEY (32+ characters, `openssl rand -base64 32`) derives the encryption keys protecting
+    stored secrets; changing it invalidates previously encrypted data.

@@ -1,0 +1,60 @@
+name: Norish Change Log
+generated: '2026-08-27'
+method: searched
+source: https://github.com/norish-recipes/norish/releases
+docs:
+- https://github.com/norish-recipes/norish/releases
+- https://docs.norish.dev/category/release-notes
+scheme: semver-with-beta-suffix
+current_version: v0.21.0-beta
+current_version_date: '2026-08-22'
+note: >-
+  Two dated surfaces carry the same releases: GitHub Releases (complete history) and versioned
+  release-notes pages on docs.norish.dev (0.19.1-beta forward). Neither publishes a machine-readable
+  changelog feed. Recent window only; breaking-change flags below are inferred from release titles
+  and are marked unknown where the title does not say.
+entries:
+- version: v0.21.0-beta
+  date: '2026-08-22'
+  highlights: UI refresh, image generation.
+  breaking: unknown
+  url: https://docs.norish.dev/release-notes/0.21.0-beta
+- version: v0.20.0-beta
+  date: '2026-08-07'
+  highlights: Offline availability, recipe provenance, improved ingredient linking.
+  breaking: unknown
+  url: https://docs.norish.dev/release-notes/0.20.0-beta
+- version: v0.19.1-beta
+  date: '2026-07-17'
+  highlights: Minor UX improvements and bug fixes.
+  breaking: unknown
+  url: https://docs.norish.dev/release-notes/0.19.1-beta
+- version: v0.19.0-beta
+  date: '2026-06-19'
+  highlights: UI/UX improvements, better home screen, cooking mode.
+  breaking: unknown
+  url: https://github.com/norish-recipes/norish/releases
+- version: v0.18.3-beta
+  date: '2026-05-10'
+  highlights: Quality-of-life improvements and bug fixes.
+  breaking: unknown
+  url: https://github.com/norish-recipes/norish/releases
+- version: v0.18.2-beta
+  date: '2026-04-30'
+  highlights: Recipe reliability fixes.
+  breaking: unknown
+  url: https://github.com/norish-recipes/norish/releases
+- version: v0.18.1-beta
+  date: '2026-04-20'
+  highlights: >-
+    Bug fixes across the board and the create API — the release that introduced recipe creation over
+    the HTTP API.
+  breaking: false
+  additions:
+  - recipe create API
+  url: https://github.com/norish-recipes/norish/releases
+- version: v0.18.0-beta
+  date: '2026-04-14'
+  highlights: Recipe sharing and import changes.
+  breaking: unknown
+  url: https://github.com/norish-recipes/norish/releases

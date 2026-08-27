@@ -1,0 +1,43 @@
+name: Norish Agent Skills
+generated: '2026-08-27'
+method: generated
+source: >-
+  Skills generated from the published Norish API reference
+  (https://docs.norish.dev/reference/api), the parser and offline configuration docs, and the
+  idempotency middleware in the public source tree. Every operation named in a skill is one Norish
+  publishes; none is invented. One provider-published file is captured verbatim, see below.
+note: >-
+  Norish is self-hosted, so every skill is written against a templated base URL — the household's
+  own instance — and an instance-issued API key. There is no vendor endpoint an agent can be pointed
+  at by default.
+skills:
+- name: norish-plan-the-week
+  file: norish-plan-the-week.md
+  method: generated
+  operations: 5
+  summary: Search recipes, place them on the shared household calendar, read back today/week/month, and unplan.
+- name: norish-stock-the-grocery-list
+  file: norish-stock-the-grocery-list.md
+  method: generated
+  operations: 8
+  summary: >-
+    Add, route to a store, tick off and undo grocery items, with the `version` optimistic-concurrency
+    rule and the x-operation-id idempotency rule stated up front.
+- name: norish-import-a-recipe
+  file: norish-import-a-recipe.md
+  method: generated
+  operations: 5
+  summary: >-
+    URL and paste import, plus the render-and-parse failure modes (Obscura render failure, blocked
+    private addresses, no delete to undo a duplicate).
+provider_published:
+- name: Norish Agent Guide
+  file: norish-AGENTS.md
+  method: searched
+  source: https://github.com/norish-recipes/norish/blob/main/AGENTS.md
+  fetched: '2026-08-27'
+  scope: repository-contributor
+  note: >-
+    Saved verbatim. IMPORTANT — this is the maintainers' guide for coding agents working ON the
+    Norish codebase (stack, repo shape, the AI boundary, working conventions). It is NOT a skill for
+    calling the Norish API, and should not be presented to an agent as one.

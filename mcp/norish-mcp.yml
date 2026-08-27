@@ -1,0 +1,114 @@
+name: Norish MCP
+generated: '2026-08-27'
+method: derived
+status: candidate
+source: >-
+  No MCP server was found. Searched the norish-recipes/norish source tree (no mcp path, no
+  @modelcontextprotocol dependency), the docs sitemap for docs.norish.dev (no MCP page), and probed
+  /.well-known/agent-card.json and /.well-known/agent.json on norish.dev (404), docs.norish.dev (404)
+  and norish.app (403) on 2026-08-27. The tool list below is DERIVED from the operations Norish
+  publishes at https://docs.norish.dev/reference/api and the router keys in
+  packages/trpc/src/openapi.ts — it is a candidate, not something Norish ships.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+note: >-
+  If an MCP server ever existed for Norish it would necessarily be local or self-hosted: each
+  instance is the user's own server, so there is no vendor URL an agent could POST to. The auth an
+  agent would present is the instance-issued x-api-key. Every tool below maps 1:1 to a documented
+  /api/v1 operation; nothing is invented.
+tools:
+- name: norish_health
+  operation_id: health
+  rest: GET /api/v1/health
+  auth_required: false
+  description: Check that the Norish API and its parser service are both healthy.
+- name: norish_get_recipe
+  operation_id: recipeGet
+  rest: GET /api/v1/recipes/{id}
+  description: Fetch a single recipe by id.
+- name: norish_search_recipes
+  operation_id: recipeSearch
+  rest: POST /api/v1/recipes/search
+  description: >-
+    Search and list recipes with optional search, searchFields, tags, categories, filterMode,
+    sortMode, minRating and maxCookingTime filters; cursor defaults to 0 and limit to 50.
+- name: norish_create_recipe
+  operation_id: recipeCreate
+  rest: POST /api/v1/recipes
+  description: Create a recipe directly.
+  confidence: medium
+  note: >-
+    The router in packages/trpc/src/openapi.ts exposes a recipeCreate procedure and the v0.18.1-beta
+    release notes call out "create api", but the published reference page does not list its path;
+    POST /api/v1/recipes is the conventional mapping and is marked medium confidence for that reason.
+- name: norish_import_recipe_from_url
+  operation_id: recipeImportUrl
+  rest: POST /api/v1/recipes/import/url
+  description: Import a recipe from a web URL (rendered in Obscura, then parsed).
+- name: norish_import_recipe_from_paste
+  operation_id: recipeImportPaste
+  rest: POST /api/v1/recipes/import/paste
+  description: Import a recipe from pasted text.
+- name: norish_list_groceries
+  operation_id: groceryList
+  rest: GET /api/v1/groceries
+  description: List the household grocery list.
+- name: norish_create_grocery
+  operation_id: groceryCreate
+  rest: POST /api/v1/groceries
+  description: Add an item to the household grocery list.
+- name: norish_mark_grocery_done
+  operation_id: groceryMarkDone
+  rest: PATCH /api/v1/groceries/{id}/done
+  description: Mark a grocery item done. Requires the item's current `version`.
+- name: norish_mark_grocery_undone
+  operation_id: groceryMarkUndone
+  rest: PATCH /api/v1/groceries/{id}/undone
+  description: Reverse a done mark. Requires the item's current `version`.
+- name: norish_delete_grocery
+  operation_id: groceryDelete
+  rest: DELETE /api/v1/groceries/{id}
+  description: Remove a grocery item. Requires the item's current `version`.
+- name: norish_assign_grocery_store
+  operation_id: groceryAssignStore
+  rest: PATCH /api/v1/groceries/{id}/store
+  description: Assign a grocery item to a store (storeId, optional savePreference). Requires `version`.
+- name: norish_list_stores
+  operation_id: storeList
+  rest: GET /api/v1/stores
+  description: List configured stores.
+- name: norish_create_store
+  operation_id: storeCreate
+  rest: POST /api/v1/stores
+  description: Create a store.
+- name: norish_planned_recipes_today
+  operation_id: plannedRecipesToday
+  rest: GET /api/v1/planned-recipes/today
+  description: Recipes planned for today (server timezone).
+- name: norish_planned_recipes_week
+  operation_id: plannedRecipesWeek
+  rest: GET /api/v1/planned-recipes/week
+  description: Recipes planned for the current week (Monday through Sunday, server timezone).
+- name: norish_planned_recipes_month
+  operation_id: plannedRecipesMonth
+  rest: GET /api/v1/planned-recipes/month
+  description: Recipes planned for the current month (server timezone).
+- name: norish_plan_recipe
+  operation_id: plannedRecipeCreate
+  rest: POST /api/v1/planned-recipes
+  description: Place a recipe on the household calendar.
+- name: norish_unplan_recipe
+  operation_id: plannedRecipeDelete
+  rest: DELETE /api/v1/planned-recipes/{itemId}
+  description: Remove a planned recipe from the calendar.
+agent_notes:
+  idempotency: >-
+    Send an x-operation-id header on every mutation; the server de-duplicates replays for 7 days and
+    returns the stored response instead of re-executing.
+  concurrency: Single-grocery mutations require the item's current `version` field.
+  reversibility: See conventions/norish-conventions.yml — done/undone is an explicit inverse pair.

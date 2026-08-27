@@ -1,0 +1,82 @@
+name: Norish Well-Known Documents
+generated: '2026-08-27'
+method: probed
+source: Direct HTTPS probes of /.well-known/* on every host associated with Norish (2026-08-27).
+note: >-
+  No /.well-known document is served on any Norish host. norish.dev and docs.norish.dev both answer
+  404 with an HTML application shell for every path probed; norish.app (the domain the harvest stub
+  originally carried) refuses every request with a 403 and an empty body, so nothing could be read
+  there at all. No WellKnown or SecurityTxt pointer is emitted in apis.yml, because a recorded
+  absence is not a served surface. Norish is self-hosted software, so any OIDC discovery document in
+  play belongs to the operator's own identity provider (configured via OIDC_WELLKNOWN), not to
+  Norish.
+hosts:
+- host: norish.dev
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: docs.norish.dev
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: norish.app
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 403
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+    file: null
+  - path: /.well-known/api-catalog
+    status: 403
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 403
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 403
+    file: null
+  - path: /.well-known/agent.json
+    status: 403
+    file: null

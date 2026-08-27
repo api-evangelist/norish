@@ -1,0 +1,28 @@
+name: Norish Plans and Pricing
+generated: '2026-08-27'
+method: searched
+source: https://norish.dev/
+docs:
+- https://norish.dev/
+- https://docs.norish.dev/quick-start
+- https://github.com/norish-recipes/norish/blob/main/LICENSE
+plan_count: 0
+note: >-
+  Norish publishes no plans, no pricing page and no hosted tier. It is free and fully open source
+  under AGPL-3.0, distributed as a Docker image the user runs on their own hardware — the landing
+  page states "Run it on your own hardware with Docker: no subscription, no account with us, nothing
+  to migrate away from later." There is no cloud offering, no contact-sales gate, and no metered API
+  quota; the only cost is the operator's own infrastructure plus whatever their configured AI
+  provider charges for the optional AI import and enrichment features. The single monetisation
+  surface found is a voluntary Buy Me a Coffee link for the maintainer in the repository README.
+plans: []
+commercial_model:
+  type: open-source self-hosted
+  license: AGPL-3.0
+  hosted_offering: false
+  paid_tier: false
+  third_party_costs:
+  - >-
+    An AI provider API key is required for AI recipe import (video, image, AI fallback) and
+    enrichment; that provider bills the operator directly, not Norish.
+  donations: https://buymeacoffee.com/mikevanes

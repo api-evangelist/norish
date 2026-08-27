@@ -1,0 +1,29 @@
+name: Norish Rate Limits
+generated: '2026-08-27'
+method: searched
+source: https://docs.norish.dev/configuration/server-runtime
+docs:
+- https://docs.norish.dev/configuration/server-runtime
+- https://docs.norish.dev/reference/api
+limit_count: 1
+note: >-
+  Norish publishes NO rate limit for the /api/v1 machine API and documents no rate-limit response
+  headers. The one published limit is operator-configurable brute-force protection on the sign-in
+  endpoints, and because Norish is self-hosted the operator owns the numbers — an agent cannot
+  assume the defaults below apply to the instance it is calling. No X-RateLimit-*, RateLimit-* or
+  Retry-After header is documented anywhere in the API reference, so there is no runtime signal for
+  a client to back off on.
+limits:
+- id: auth-endpoints
+  scope: per auth endpoint (sign-in), instance-wide configuration
+  window: 60 seconds (AUTH_RATE_LIMIT_WINDOW, default 60)
+  limit: 20 requests per window (AUTH_RATE_LIMIT_MAX, default 20)
+  burst: null
+  enabled_by: AUTH_RATE_LIMIT_ENABLED (default true)
+  applies_to: /api/auth/* sign-in endpoints
+  note: >-
+    Documented as brute-force protection, not as an API quota. The docs warn that disabling it
+    removes brute-force protection from sign-in.
+response_headers: []
+exhaustion_status: null
+quotas: []
