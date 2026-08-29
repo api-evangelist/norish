@@ -8,6 +8,17 @@ description: Norish is an open-source, self-hosted recipe and meal-planning appl
   HTTP API under /api/v1 — recipes, recipe imports, groceries, stores and planned recipes — secured
   with an instance-issued API key, plus a generated OpenAPI document and a Scalar API reference that
   are served from the running instance to signed-in users.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://raw.githubusercontent.com/norish-recipes/norish/main/.github/assets/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/norish/refs/heads/main/apis.yml
 x-type: company
