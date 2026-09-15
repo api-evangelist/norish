@@ -1,13 +1,13 @@
 aid: norish
 name: Norish
-description: Norish is an open-source, self-hosted recipe and meal-planning application built for
-  households — import a recipe from a URL, video or photo, plan the week on a shared calendar, and
-  keep a grocery list that every member of the household sees update in real time. It is distributed
-  as a Docker image (norishapp/norish) under AGPL-3.0 and runs entirely on the operator's own
-  hardware, with PostgreSQL, Redis and a Python parser service behind it. Each instance exposes an
-  HTTP API under /api/v1 — recipes, recipe imports, groceries, stores and planned recipes — secured
-  with an instance-issued API key, plus a generated OpenAPI document and a Scalar API reference that
-  are served from the running instance to signed-in users.
+description: Norish is an open-source, self-hosted recipe and meal-planning application built for households
+  — import a recipe from a URL, video or photo, plan the week on a shared calendar, and keep a grocery
+  list that every member of the household sees update in real time. It is distributed as a Docker image
+  (norishapp/norish) under AGPL-3.0 and runs entirely on the operator's own hardware, with PostgreSQL,
+  Redis and a Python parser service behind it. Each instance exposes an HTTP API under /api/v1 — recipes,
+  recipe imports, groceries, stores and planned recipes — secured with an instance-issued API key, plus
+  a generated OpenAPI document and a Scalar API reference that are served from the running instance to
+  signed-in users.
 deliveryModel:
   model: saas
   open_source: false
@@ -68,13 +68,13 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- aid: norish-recipe-api
+- aid: norish:norish-recipe-api
   name: Norish Recipe API
-  description: The HTTP API each Norish instance serves under /api/v1, covering a public health
-    check plus authenticated recipe read/search/create/import, grocery list management, stores, and
-    planned recipes for today/week/month. Authenticated with an instance-issued API key passed as
-    x-api-key or as an Authorization Bearer token. Because Norish is self-hosted there is no vendor
-    base URL — the host is the operator's own instance, so the base is templated.
+  description: The HTTP API each Norish instance serves under /api/v1, covering a public health check
+    plus authenticated recipe read/search/create/import, grocery list management, stores, and planned
+    recipes for today/week/month. Authenticated with an instance-issued API key passed as x-api-key or
+    as an Authorization Bearer token. Because Norish is self-hosted there is no vendor base URL — the
+    host is the operator's own instance, so the base is templated.
   humanURL: https://docs.norish.dev/reference/api
   baseURL: https://{norish-instance-host}/api/v1
   tags:
@@ -129,7 +129,10 @@ common:
   url: llms/norish-llms.txt
 - type: X-MCPServerCandidate
   url: mcp/norish-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+    — a tool list derived from the published API contracts, not an existing server. The scorer already
+    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+    surfaces with a server that does not exist.'
 - type: DeveloperPortal
   url: https://docs.norish.dev/
 - type: APIReference
