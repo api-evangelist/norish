@@ -1,0 +1,26 @@
+# Front Door AI Index — norish — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: norish
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: norish.dev
+  final_host: norish.dev
+  ownership: own
+  owner: norish
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 3
+  host_score: 3
+  density: 3.4
+  words: 882
+  tiers:
+    agentic: 0
+    core: 2
+    model: 1
+  ambiguous: 0
+  top_terms:
+    AI: 2
+    Anthropic: 1
