@@ -9,15 +9,21 @@ description: Norish is an open-source, self-hosted recipe and meal-planning appl
   a generated OpenAPI document and a Scalar API reference that are served from the running instance to
   signed-in users.
 deliveryModel:
-  model: saas
-  open_source: false
+  model: open-core
+  license: AGPL-3.0
+  license_evidence:
+    repo: norish-recipes/norish
+    spdx: AGPL-3.0
+    stars: 1229
+  open_source: true
   commercial: true
   callable_host: false
-  label: Hosted service · you call their endpoint
+  label: Open core · an OSS project plus a commercial hosted product
   confidence: medium
   source:
   - pricing
-  generated: '2026-08-28'
+  - repository-license
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: unknown
@@ -47,7 +53,7 @@ tags:
 - Groceries
 - Food
 - Self-Hosted
-- Open-Source
+- Open Source
 - Household
 - Calendar
 - CalDAV
@@ -62,6 +68,7 @@ tags_raw:
 - Household
 - Calendar
 - CalDAV
+- Open-Source
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
