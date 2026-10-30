@@ -64,5 +64,107 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Norish is a company surfaced via the API Evangelist harvest backlog (source: health-device-stack) and added to the network as a stub for full-pipeline profiling.
-- https://norish.app
+Norish is an open-source, self-hosted recipe and meal-planning application built for households — import a recipe from a URL, video or photo, plan the week on a shared calendar, and keep a grocery list that every member of the household sees update in real time. It is distributed as a Docker image (norishapp/norish) under AGPL-3.0 and runs entirely on the operator's own hardware, with PostgreSQL, Redis and a Python parser service behind it. Each instance exposes an HTTP API under /api/v1 — recipes, recipe imports, groceries, stores and planned recipes — secured with an instance-issued API key, plus a generated OpenAPI document and a Scalar API reference that are served from the running instance to signed-in users.
+
+**Areas:** Company · Recipes · Meal Planning · Groceries · Food · Self-Hosted · Open Source · Household · Calendar · CalDAV
+
+## Norish on APIs.io
+
+Everything profiled for Norish is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/norish/](https://apis.io/providers/norish/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Norish Recipe API](https://apis.io/apis/norish/norish-recipe-api/) — The HTTP API each Norish instance serves under /api/v1, covering a public health check plus authenticated recipe read/search/create/import, grocery list…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Norish MCP](https://apis.io/servers/norish/norish-mcp/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Norish Authentication](https://apis.io/security/norish/norish-authentication/)
+- [Norish Domain Security](https://apis.io/security/norish/norish-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Norish Plans Pricing](https://apis.io/plans/norish/norish-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Norish Rate Limits](https://apis.io/rate-limits/norish/norish-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://norish.dev)
+- [Documentation](https://docs.norish.dev/)
+- [Getting started](https://docs.norish.dev/quick-start)
+- [API reference](https://docs.norish.dev/reference/api)
+- [Support](https://github.com/norish-recipes/norish/issues)
+- [GitHub](https://github.com/norish-recipes)
+
+## API Evangelist rating
+
+**Kin Score 24.5** — emerging · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 0.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 39.5 |
+| Developer ergonomics | 56.5 |
+| Access clarity | 0.0 |
+
+**Agent readiness 9.2** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/norish/](https://apis.io/providers/norish/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Norish: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/norish/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
